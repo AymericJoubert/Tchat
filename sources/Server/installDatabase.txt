@@ -1,0 +1,5 @@
+/*      POSTGRESQL INSTALL                *\
+/* sudo apt-get install postgresql        *\
+/* sudo -u postgres psql postgres         *\
+/* # \password postgres (-> set postgres) *\
+/* create database tchat;                 *\

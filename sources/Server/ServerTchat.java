@@ -49,7 +49,7 @@ public class ServerTchat implements Runnable {
             TimeStamp = new java.util.Date().toString();
             String returnCode = "MultipleSocketServer repsonded at "+ TimeStamp + (char) 13;
             BufferedOutputStream os = new BufferedOutputStream(connection.getOutputStream());
-            OutputStreamWriter osw = new OutputStreamWriter(os, "US-ASCII");
+            OutputStreamWriter osw = new OutputStreamWriter(os, "UTF-8");
             osw.write(returnCode);
             osw.flush();
         }
