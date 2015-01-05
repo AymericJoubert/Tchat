@@ -1,0 +1,71 @@
+package Client;
+
+import java.util.List;
+import java.util.ArrayList;
+import java.util.Iterator;
+
+import java.awt.*;
+
+import javax.swing.*;
+
+public class Gui {
+	private List<JPanel> bundle = new ArrayList<JPanel>();
+	private String name;
+	private JFrame gui;
+	private JPanel jp;
+
+	public Gui(String name){
+		this.name = name;
+		gui = new JFrame(name);
+		make();
+	}
+
+	public void make() {
+		gui.setResizable(true);
+		gui.setExtendedState(gui.MAXIMIZED_BOTH);
+		gui.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+		// Creating gui content
+		JPanel content = new JPanel();
+		content.setLayout(new BorderLayout());
+		
+
+		
+		// Container images
+		jp = new JPanel();
+		jp.setLayout(new BoxLayout(jp, BoxLayout.LINE_AXIS));
+		JPanel jpContact = new JPanel();
+		JPanel jpFifou = new JPanel();
+		jpContact.setPreferredSize(new Dimension(100,100));
+		jpFifou.setPreferredSize(new Dimension(100,100));
+		jp.add(jpContact);
+		jp.add(jpFifou);
+		jp.setBackground(Color.GREEN);
+		content.add(jp, BorderLayout.WEST);
+
+		// Container Discussion
+		jp = new JPanel();
+		JTextField discussionTextField = new JTextField();
+		discussionTextField.setPreferredSize(new Dimension(700,500));
+		jp.add(discussionTextField);
+
+		jp.setBackground(Color.BLACK);
+		content.add(jp, BorderLayout.CENTER);
+
+		// TextField
+		jp = new JPanel(new FlowLayout());
+		JTextField jt = new JTextField();
+		JButton jb = new JButton("Envoyer");
+		jt.setPreferredSize(new Dimension(600,200));
+		jb.setSize(50,50);
+		jp.add(jt);
+		jp.add(jb);
+		jp.setBackground(Color.GREEN);
+		content.add(jp, BorderLayout.SOUTH);
+		
+
+		gui.setContentPane(content);
+		gui.setVisible(true);
+	}
+
+}

@@ -1,9 +1,27 @@
 package Client;
 
+import Client.Gui;
+
 import java.net.*;
 import java.io.*;
 
-public class ClientTchat {
+import java.util.List;
+import java.util.ArrayList;
+import java.util.Iterator;
+
+import java.awt.Color;
+import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
+import javax.swing.SwingConstants;
+
+public class ClientTchat extends JFrame {
 
     public static void main(String [] args){
         String host = "localhost";
@@ -12,7 +30,10 @@ public class ClientTchat {
         String TimeStamp;
         System.out.println("SocketClient initialized");
 
+        Gui gui;
+/*
         try {
+            
             // Socket connection
             InetAddress address = InetAddress.getByName(host);
             Socket connection = new Socket(address, port);
@@ -45,13 +66,16 @@ public class ClientTchat {
 
             // Close the socket connection
             connection.close();
-            System.out.println(instr);
+            System.out.println(instr);*/
+
+            gui = new Gui("Tchat");
+/*
         }
         catch (IOException f) {
             System.out.println("IOException: " + f);
         }
         catch (Exception g) {
             System.out.println("Exception: " + g);
-        }
+        }*/
     }
 }
