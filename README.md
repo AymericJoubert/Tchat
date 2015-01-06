@@ -11,6 +11,10 @@ Possibility to add contacts
 Connection Pool <br>
 Data encryption <br>
 
+Used Libraries :
+----------------
+PostGreSql
+
 
 Manual (Work In Progress) :
 ---------------------------
