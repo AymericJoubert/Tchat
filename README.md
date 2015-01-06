@@ -8,6 +8,7 @@ Next Features :
 
 Gui for User Registering
 Possibility to add contacts
+Configuration File
 Connection Pool <br>
 Data encryption <br>
 
