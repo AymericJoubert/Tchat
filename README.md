@@ -6,9 +6,9 @@ A tchat in Java based on Client Server architecture (like MSN)
 Next Features :
 ---------------
 
-Gui for User Registering
-Possibility to add contacts
-Configuration File
+Gui for User Registering <br>
+Possibility to add contacts <br>
+Configuration File <br>
 Connection Pool <br>
 Data encryption <br>
 
