@@ -8,6 +8,7 @@ import java.io.PrintWriter;
 import java.net.Socket;
 
 import javax.swing.*;
+import javax.swing.border.EtchedBorder;
 
 public class UserGui implements ActionListener, Gui {
 	private String name;
@@ -41,6 +42,11 @@ public class UserGui implements ActionListener, Gui {
 	}
 
 	public void makeGui() {
+
+		// Get current screen size (in case of multiple monitors)
+		double width = GraphicsEnvironment.getLocalGraphicsEnvironment().getMaximumWindowBounds().width;
+		double height = GraphicsEnvironment.getLocalGraphicsEnvironment().getMaximumWindowBounds().height;
+
 		gui.setResizable(true);
 		gui.setExtendedState(Frame.MAXIMIZED_BOTH);
 		gui.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
@@ -52,19 +58,20 @@ public class UserGui implements ActionListener, Gui {
 		// Contact infos
 		jp = new JPanel();
 		jp.setLayout(new BoxLayout(jp, BoxLayout.LINE_AXIS));
-		JPanel jpContact = new JPanel();
-		JPanel jpFifou = new JPanel();
-		jpContact.setPreferredSize(new Dimension(100,100));
-		jpFifou.setPreferredSize(new Dimension(100,100));
-		jp.add(jpContact);
-		jp.add(jpFifou);
+		JPanel jpImageContact = new JPanel();
+		jpImageContact.setBackground(Color.BLUE);
+		jpImageContact.setPreferredSize(new Dimension((int)(0.12*width),(int)(0.2*height)));
+		jp.add(jpImageContact);
+
 		jp.setBackground(Color.GREEN);
+		jpImageContact.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.LOWERED));
 		content.add(jp, BorderLayout.EAST);
 
 		// Container Discussion
 		jp = new JPanel();
-		discussionArea.setPreferredSize(new Dimension(700,500));
+		discussionArea.setPreferredSize(new Dimension((int) (0.55 * width), (int) (0.6 * height)));
 		discussionArea.setEditable(false);
+		discussionArea.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.LOWERED));
 		jp.add(discussionArea);
 
 //		jp.setBackground(Color.BLACK);
@@ -72,9 +79,14 @@ public class UserGui implements ActionListener, Gui {
 
 		// TextField
 		jp = new JPanel(new FlowLayout());
+		JPanel jpImageFifou = new JPanel();
+		jpImageFifou.setBackground(Color.BLACK);
+		jpImageFifou.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.LOWERED));
+		jpImageFifou.setPreferredSize(new Dimension((int) (0.12 * width), (int) (0.2 * height)));
 		jbSend.addActionListener(this);
-		jtSend.setPreferredSize(new Dimension(600,200));
-		jbSend.setSize(50,50);
+		jbSend.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.LOWERED));
+		jtSend.setPreferredSize(new Dimension((int) (0.61 * width), (int) (0.2 * height)));
+		jp.add(jpImageFifou);
 		jp.add(jtSend);
 		jp.add(jbSend);
 //		jp.setBackground(Color.GREEN);
