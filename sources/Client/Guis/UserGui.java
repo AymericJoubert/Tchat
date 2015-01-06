@@ -42,14 +42,14 @@ public class UserGui implements ActionListener, Gui {
 
 	public void makeGui() {
 		gui.setResizable(true);
-		gui.setExtendedState(gui.MAXIMIZED_BOTH);
-		gui.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		gui.setExtendedState(Frame.MAXIMIZED_BOTH);
+		gui.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
 		// Creating gui content
 		JPanel content = new JPanel();
 		content.setLayout(new BorderLayout());
-		
-		// Container images
+
+		// Contact infos
 		jp = new JPanel();
 		jp.setLayout(new BoxLayout(jp, BoxLayout.LINE_AXIS));
 		JPanel jpContact = new JPanel();
@@ -59,7 +59,7 @@ public class UserGui implements ActionListener, Gui {
 		jp.add(jpContact);
 		jp.add(jpFifou);
 		jp.setBackground(Color.GREEN);
-		content.add(jp, BorderLayout.WEST);
+		content.add(jp, BorderLayout.EAST);
 
 		// Container Discussion
 		jp = new JPanel();
@@ -79,7 +79,8 @@ public class UserGui implements ActionListener, Gui {
 		jp.add(jbSend);
 //		jp.setBackground(Color.GREEN);
 		content.add(jp, BorderLayout.SOUTH);
-		
+
+		gui.setJMenuBar(createMenu());
 
 		gui.setContentPane(content);
 		try {
@@ -125,6 +126,23 @@ public class UserGui implements ActionListener, Gui {
 				jtSend.setText("");
 			}
 		}
+	}
+
+	public JMenuBar createMenu() {
+		JMenuBar menuBar;
+		JMenu menu, submenu;
+		JMenuItem menuItem;
+		JRadioButtonMenuItem rbMenuItem;
+		JCheckBoxMenuItem cbMenuItem;
+		menuBar = new JMenuBar();
+		menu = new JMenu("A Menu");
+		menuBar.add(menu);
+		menuItem = new JMenuItem("A menu item");
+		menu.add(menuItem);
+		menuItem = new JMenuItem("Another menu item");
+		menu.add(menuItem);
+
+		return menuBar;
 	}
 
 }
