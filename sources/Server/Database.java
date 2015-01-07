@@ -3,13 +3,14 @@ package Server;
 import java.sql.DriverManager;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.sql.Statement;
 
 public class Database {
     String database;
     Connection connection;
 
-    public Database (String database) {
-        this.database = database;
+    public Database (String databaseName) {
+        this.database = databaseName;
         connection = null;
         // test if postgresql class is found
         try {
@@ -37,5 +38,22 @@ public class Database {
 
     public int ExecuteDelete (String query) {
         return 0;
+    }
+
+    public boolean register(String query) {
+        Statement stmt = null;
+        try {
+            stmt = connection.createStatement();
+            int nbLines = stmt.executeUpdate(query);
+            if (nbLines > 0) return true;
+        }
+        catch(Exception e){
+            try {
+                stmt.close();
+            }
+            catch(Exception ee){}
+            return false;
+        }
+        return false;
     }
 }
