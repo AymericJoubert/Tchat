@@ -10,9 +10,13 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.InetAddress;
 import java.net.Socket;
+import java.util.concurrent.Executors;
+
+import Client.Chat.ClientTchat;
 
 public class SignGui extends Thread implements ActionListener, Gui {
 
+    ClientTchat clientTchat;
     // Connection infos
     InetAddress address;
     int port;
@@ -38,13 +42,20 @@ public class SignGui extends Thread implements ActionListener, Gui {
     private JPanel container;
     private JPanel credentialsContainer;
 
+    private JFrame gui;
+
+    private String imgLoading;
     private ImageIcon loadingImg;
 
-    public SignGui(InetAddress address, int port) {
+    private Container waitingGui;
+
+    public SignGui(InetAddress address, int port, ClientTchat clientTchat) {
         this.address = address;
         this.port = port;
+        this.clientTchat = clientTchat;
+
         try {
-            String imgLoading = System.getProperty("user.dir") + File.separator + "sources" + File.separator + "Client" + File.separator + "images" + File.separator + "loading.gif";
+            imgLoading = System.getProperty("user.dir") + File.separator + "sources" + File.separator + "Client" + File.separator + "images" + File.separator + "loading.gif";
             System.out.println(imgLoading);
             loadingImg = new ImageIcon(new ImageIcon(imgLoading).getImage().getScaledInstance(230, 300, Image.SCALE_DEFAULT));
         }
@@ -52,7 +63,7 @@ public class SignGui extends Thread implements ActionListener, Gui {
             System.out.println("An error occured when generating images");
         }
 
-        JFrame gui = new JFrame();
+        gui = new JFrame();
         container = new JPanel(new BorderLayout());
         credentialsContainer = new JPanel(new FlowLayout());
         JPanel loginContainer = new JPanel();
@@ -134,7 +145,6 @@ public class SignGui extends Thread implements ActionListener, Gui {
         }
 //        gui.setBackground(new Color(0,175,240));
         gui.setVisible(true);
-
     }
 
     public void actionPerformed(ActionEvent e){
@@ -145,13 +155,13 @@ public class SignGui extends Thread implements ActionListener, Gui {
             System.out.println("Inscription ...");
             if(!registerUsername.getText().equals("") && !registerPassword.getText().equals("") && !registerEmail.getText().equals("")) {
                 if (registerPassword.getText().equals(registerPasswordConf.getText())) {
-                    container.remove(credentialsContainer);
-                    JLabel image = new JLabel(loadingImg);
-                    container.add(new JLabel("Inscription ..."), BorderLayout.NORTH);
-                    container.add(image, BorderLayout.CENTER);
-                    container.revalidate();
-
-                    inscription(registerUsername.getText(), registerPassword.getText(), registerEmail.getText());
+                    setWaitingGui();
+                    Thread signInThread = new Thread() {
+                        public void run() {
+                            clientTchat.signIn(registerUsername.getText(), registerPassword.getText(), registerEmail.getText());
+                        }
+                    };
+                    signInThread.start();
                 }
                 else{
                     registerUsernameBorder.setTitleColor(null);
@@ -169,25 +179,13 @@ public class SignGui extends Thread implements ActionListener, Gui {
         }
     }
 
-    public String [] inscription (String username, String password, String email){
-        Socket connection = null;
-        String [] ret = null;
-        try {
-            connection = new Socket(address, port);
-            PrintWriter out = new PrintWriter(connection.getOutputStream());
-            BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-            out.println("register###"+username+"###"+password+"###"+email);
-            out.flush();
-            return in.readLine().split("###");
-        }
-        catch(Exception e){
-            System.out.println("An error occured during registration");
-            try {
-                connection.close();
-            }
-            catch(Exception ee){}
-            return new String [0];
-        }
+    public void setWaitingGui(){
+        waitingGui = credentialsContainer;
+        container.remove(credentialsContainer);
+        JLabel image = new JLabel(loadingImg);
+        container.add(new JLabel("Enregistrement ...", SwingConstants.CENTER), BorderLayout.NORTH);
+        container.add(image, BorderLayout.CENTER);
+        container.revalidate();
     }
 
 }
