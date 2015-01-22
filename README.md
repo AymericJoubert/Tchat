@@ -15,8 +15,8 @@ Interfaces <br/>
 Next Steps :
 ---------------
 
-Gui for User Registering <br/>
 Possibility to add contacts <br/>
+Tchat ? <br/>
 Configuration File <br/>
 Launch via Jar File <br>
 Style
