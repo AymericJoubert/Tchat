@@ -1,9 +1,6 @@
 package Server;
 
-import java.sql.DriverManager;
-import java.sql.Connection;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 
 public class Database {
     String database;
@@ -40,7 +37,8 @@ public class Database {
         return 0;
     }
 
-    public boolean register(String query) {
+    public boolean register(String username, String password) {
+        String query = "INSERT INTO users (username, password) VALUES ('" + username + "','" + password + "');";
         Statement stmt = null;
         try {
             stmt = connection.createStatement();
@@ -55,5 +53,28 @@ public class Database {
             return false;
         }
         return false;
+    }
+
+    public String login(String username, String password) {
+        String query = "SELECT * FROM users WHERE username = '" + username + "' AND password = '" + password + "';";
+        System.out.println(query);
+        Statement stmt = null;
+        ResultSet rs = null;
+        try {
+            stmt = connection.createStatement();
+            rs = stmt.executeQuery(query);
+            if(rs.next()){
+                System.out.println("j'ai un resultat");
+                return "success###" + rs.getString(1) + "###" + rs.getString(2) + "###" + rs.getString(3);
+            }
+        }
+        catch(Exception e){
+            try {
+                stmt.close();
+            }
+            catch(Exception ee){}
+            return "fail###";
+        }
+        return "fail###";
     }
 }

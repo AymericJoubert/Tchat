@@ -1,5 +1,8 @@
 package Client.Guis;
 
+import Client.Chat.ClientTchat;
+import Client.Chat.User;
+
 import java.awt.*;
 import java.awt.event.*;
 import java.io.BufferedReader;
@@ -11,7 +14,10 @@ import javax.swing.*;
 import javax.swing.border.EtchedBorder;
 
 public class UserGui implements ActionListener, Gui {
+	private boolean waiting;
 	private String name;
+	private ClientTchat clientTchat;
+	private User user;
 	private JFrame gui;
 	private JPanel jp;
 	private JButton jbSend;
@@ -20,8 +26,11 @@ public class UserGui implements ActionListener, Gui {
 	PrintWriter out;
 	BufferedReader in;
 
-	public UserGui(String name, Socket server){
+	public UserGui(String name, Socket server, ClientTchat clientTchat, User user){
 		this.name = name;
+		this.clientTchat = clientTchat;
+		this.waiting = false;
+		this.user = user;
 		gui = new JFrame(name);
 		jbSend = new JButton("Envoyer");
 		jtSend = new JTextArea();
@@ -155,6 +164,19 @@ public class UserGui implements ActionListener, Gui {
 		menu.add(menuItem);
 
 		return menuBar;
+	}
+
+	public void close() {
+		gui.dispatchEvent(new WindowEvent(gui, WindowEvent.WINDOW_CLOSING));
+	}
+
+	public void popupMessage(String message) {
+		JOptionPane.showMessageDialog(null, message);
+	}
+
+	public void stopWaiting(boolean resetContainer){
+		if(waiting){
+		}
 	}
 
 }

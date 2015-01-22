@@ -13,10 +13,12 @@ public class ClientTchat {
     InetAddress address;
     int port;
 
-    Gui gui;
+    Gui signGui;
+    Gui tchatGui;
     Socket connection = null;
     PrintWriter out = null;
     BufferedReader in = null;
+
     public ClientTchat(InetAddress address, int port) {
         this.address = address;
         this.port = port;
@@ -31,20 +33,57 @@ public class ClientTchat {
         }
     }
 
-    public void setGui(SignGui gui){
-        this.gui = gui;
+    public void setSignGui(SignGui signGui){
+        this.signGui = signGui;
     }
 
     public void signIn(String username, String password, String email) {
+        String [] ret;
         try {
-            System.out.println("Je Passe ici");
-            out.println("register###"+username+"###"+password+"###"+email);
+            out.println("register###" + username + "###" + password + "###" + email);
             out.flush();
-            System.out.println(in.readLine().split("###").toString());
-//            return null;
+            ret = in.readLine().split("###");
+            if (ret[0].equals("successRegister")){
+                signGui.stopWaiting(true);
+                signGui.popupMessage("You are now registered ! Log in to chat as a fifou !");
+//                this.tchatGui = new UserGui("Fifou", connection, this);
+            }
+            else{
+                signGui.stopWaiting(false);
+                signGui.popupMessage("Inscription impossible, nom d'utilisateur indisponible.");
+            }
         }
         catch(Exception e){
             System.out.println("An error occured during registration");
+            try {
+                connection.close();
+            }
+            catch(Exception ee){}
+            System.out.println("tout cassé");
+        }
+    }
+
+    public void logIn(String username, String password){
+        String [] ret;
+        try {
+            out.println("login###" + username + "###" + password);
+            out.flush();
+            String tmp = in.readLine();
+            ret = tmp.split("###");
+            System.out.println(tmp);
+            if (ret[0].equals("success")){
+                User user = new User(ret[1], ret[2], ret[3]);
+                System.out.println("changement de gui");
+                signGui.close();
+                this.tchatGui = new UserGui("Fifou", connection, this, user);
+            }
+            else{
+                signGui.stopWaiting(false);
+                signGui.popupMessage("Connection Impossible.");
+            }
+        }
+        catch(Exception e){
+            System.out.println("An error occured during connection");
             try {
                 connection.close();
             }

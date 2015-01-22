@@ -14,7 +14,7 @@ import java.util.concurrent.Executors;
 
 import Client.Chat.ClientTchat;
 
-public class SignGui extends Thread implements ActionListener, Gui {
+public class SignGui implements ActionListener, Gui {
 
     ClientTchat clientTchat;
     // Connection infos
@@ -41,22 +41,27 @@ public class SignGui extends Thread implements ActionListener, Gui {
 
     private JPanel container;
     private JPanel credentialsContainer;
+    private JPanel waitingContainer;
 
+    private JLabel infoText;
     private JFrame gui;
 
     private String imgLoading;
     private ImageIcon loadingImg;
 
     private Container waitingGui;
+    private boolean waiting;
 
     public SignGui(InetAddress address, int port, ClientTchat clientTchat) {
         this.address = address;
         this.port = port;
         this.clientTchat = clientTchat;
-
+        this.waiting = false;
+        this.waitingContainer = new JPanel(new BorderLayout());
+        this.infoText = new JLabel("",SwingConstants.CENTER);
         try {
             imgLoading = System.getProperty("user.dir") + File.separator + "sources" + File.separator + "Client" + File.separator + "images" + File.separator + "loading.gif";
-            System.out.println(imgLoading);
+//            System.out.println(imgLoading);
             loadingImg = new ImageIcon(new ImageIcon(imgLoading).getImage().getScaledInstance(230, 300, Image.SCALE_DEFAULT));
         }
         catch(Exception imgE){
@@ -129,6 +134,7 @@ public class SignGui extends Thread implements ActionListener, Gui {
 
         // Setting full container and create gui
         container.add(credentialsContainer, BorderLayout.CENTER);
+        container.add(infoText, BorderLayout.NORTH);
         gui.setContentPane(container);
         gui.setJMenuBar(menuBar);
         gui.setResizable(false);
@@ -144,18 +150,22 @@ public class SignGui extends Thread implements ActionListener, Gui {
             e.printStackTrace();
         }
 //        gui.setBackground(new Color(0,175,240));
+        gui.setLocationRelativeTo(null);
         gui.setVisible(true);
     }
 
+    public void resetMainContainer(){
+        registerEmail.setText("");
+        registerPassword.setText("");
+        registerPasswordConf.setText("");
+        registerUsername.setText("");
+    }
+
     public void actionPerformed(ActionEvent e){
-        if(e.getSource() == loginButton) {
-            System.out.println("Connection");
-        }
         if(e.getSource() == registerButton) {
-            System.out.println("Inscription ...");
             if(!registerUsername.getText().equals("") && !registerPassword.getText().equals("") && !registerEmail.getText().equals("")) {
                 if (registerPassword.getText().equals(registerPasswordConf.getText())) {
-                    setWaitingGui();
+                    setWaiting("Enregistrement ...");
                     Thread signInThread = new Thread() {
                         public void run() {
                             clientTchat.signIn(registerUsername.getText(), registerPassword.getText(), registerEmail.getText());
@@ -168,24 +178,63 @@ public class SignGui extends Thread implements ActionListener, Gui {
                     registerPasswordBorder.setTitleColor(Color.RED);
                     registerPasswordConfBorder.setTitleColor(Color.RED);
                     registerEmailBorder.setTitleColor(null);
-                    container.add(new JLabel("Password Error"), BorderLayout.NORTH);
+                    infoText.setText("Password Error");
                     container.revalidate();
                 }
             }
             else {
-                container.add(new JLabel("Fields are not all filled."), BorderLayout.NORTH);
+                infoText.setText("Fields are not all filled.");
+                container.revalidate();
+            }
+        }
+        if(e.getSource() == loginButton) {
+            if(!loginUsername.getText().equals("") && !loginPassword.getText().equals("")){
+                setWaiting("Connexion ...");
+                Thread logInThread = new Thread() {
+                    public void run() {
+                        clientTchat.logIn(loginUsername.getText(), loginPassword.getText());
+                    }
+                };
+                logInThread.start();
+            }
+            else{
+                loginUsernameBorder.setTitleColor(Color.RED);
+                loginPasswordBorder.setTitleColor(Color.RED);
+                infoText.setText("Veuillez remplir les deux champs.");
                 container.revalidate();
             }
         }
     }
 
-    public void setWaitingGui(){
+    public void setWaiting(String message){
+        waiting = true;
         waitingGui = credentialsContainer;
         container.remove(credentialsContainer);
         JLabel image = new JLabel(loadingImg);
-        container.add(new JLabel("Enregistrement ...", SwingConstants.CENTER), BorderLayout.NORTH);
-        container.add(image, BorderLayout.CENTER);
+        infoText.setText(message);
+        waitingContainer.add(image, BorderLayout.CENTER);
+        container.add(waitingContainer);
         container.revalidate();
+    }
+
+    public void stopWaiting(final boolean resetContainer){
+        if(waiting){
+            if (resetContainer) {
+                resetMainContainer();
+            }
+            container.remove(waitingContainer);
+            container.add(credentialsContainer);
+            container.repaint();
+        }
+    }
+
+    public void close() {
+        gui.setVisible(false);
+//        gui.dispatchEvent(new WindowEvent(gui, WindowEvent.WINDOW_CLOSING));
+    }
+
+    public void popupMessage(String message) {
+        JOptionPane.showMessageDialog(null, message);
     }
 
 }

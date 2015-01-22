@@ -13,6 +13,7 @@ public class ServerTchat implements Runnable {
     private Socket connection2;
     private int ID;
     private Map connectedUsers = new HashMap<String, String>();
+    private static Database db;
 
     public static void main(String[] args) {
         log("Booting ServerTchat");
@@ -21,6 +22,8 @@ public class ServerTchat implements Runnable {
             int port = 11111;
             int count = 0;
             ServerSocket socket = new ServerSocket(port);
+            log("Connecting Database ...");
+            db = new Database("tchat");
             log("ServerTchat Initialized");
             while (true) {
                 System.out.println("Attente de connection");
@@ -58,23 +61,27 @@ public class ServerTchat implements Runnable {
         System.out.println("[" + formatter.format(timeStampDate) + "] : " + message);
     }
 
+
     public void run() {
         try {
-            System.out.println("Je passe ici.");
             PrintWriter out = new PrintWriter(connection.getOutputStream());
             BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
             String req = in.readLine();
             String [] request = req.split("###");
-            System.out.println("Je passe ici.");
-            Database db = new Database("tchat");
             System.out.println(request[0]);
             if(request[0].equals("register")){
-                out.println(Boolean.toString(db.register("Je dois entrer une query ici")));
+                if(db.register(request[1], request[2])){
+                    out.println("successRegister");
+                    out.flush();
+                }
             }
-            System.out.println("Je passe ici.");
+            if(request[0].equals("login")){
+                out.println(db.login(request[1], request[2]));
+                out.flush();
+            }
         }
         catch (Exception e){
-            e.printStackTrace();;
+            e.printStackTrace();
         }
 
 

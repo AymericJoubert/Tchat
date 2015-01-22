@@ -3,5 +3,5 @@
 /* sudo -u postgres psql postgres         *\
 /* # \password postgres (-> set postgres) *\
 /* create database tchat;                 *\
-/* CREATE TABLE users (id SERIAL PRIMARY KEY, username VARCHAR(255), password VARCHAR(255)); *\
+/* CREATE TABLE users (id SERIAL PRIMARY KEY, username VARCHAR(255) UNIQUE, password VARCHAR(255)); *\
 /* CREATE TABLE contacts (idContact SERIAL PRIMARY KEY, idUser1 int REFERENCES users (id), idUser2 int REFERENCES users (id)); *\
