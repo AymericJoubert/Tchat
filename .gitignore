@@ -1,3 +1,6 @@
 .idea/*
 .idea
 ./classes/*.class
+./classes/Client/Chat/*.class
+./classes/Client/Guis/*.class
+./classes/Server*.class
