@@ -1,7 +1,7 @@
 Tchat
 =====
 
-A tchat in Java based on Client Server architecture (like MSN)
+A tchat in Java based on Client Server architecture (MSN/Skype like)
 
 
 Done Featunes :
@@ -9,7 +9,7 @@ Done Featunes :
 
 Registration <br/>
 Login <br/>
-Interfaces <br/>
+Graphical Interfaces <br/>
 
 
 Next Steps :
