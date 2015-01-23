@@ -14,7 +14,7 @@ public class ClientTchat {
     int port;
 
     Gui signGui;
-    Gui tchatGui;
+    UserGui tchatGui;
     Socket connection = null;
     PrintWriter out = null;
     BufferedReader in = null;
@@ -65,17 +65,21 @@ public class ClientTchat {
 
     public void logIn(String username, String password){
         String [] ret;
+        String tmp;
         try {
             out.println("login###" + username + "###" + password);
             out.flush();
-            String tmp = in.readLine();
+            tmp = in.readLine();
             ret = tmp.split("###");
             System.out.println(tmp);
             if (ret[0].equals("success")){
+                tmp = in.readLine();
                 User user = new User(ret[1], ret[2], ret[3]);
                 System.out.println("changement de gui");
                 signGui.close();
-                this.tchatGui = new UserGui("Fifou", connection, this, user);
+                tchatGui = new UserGui("Fifou", connection, this, user);
+                tchatGui.setVisible(true);
+                tchatGui.setContactList(tmp);
             }
             else{
                 signGui.stopWaiting(false);
@@ -84,11 +88,13 @@ public class ClientTchat {
         }
         catch(Exception e){
             System.out.println("An error occured during connection");
+            e.printStackTrace();
             try {
                 connection.close();
             }
-            catch(Exception ee){}
-            System.out.println("tout cassé");
+            catch(Exception ee){
+                ee.printStackTrace();
+            }
         }
     }
 }

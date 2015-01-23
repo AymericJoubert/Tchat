@@ -162,6 +162,10 @@ public class SignGui implements ActionListener, Gui {
         infoText.setText("");
     }
 
+    public void setVisible(boolean visible){
+        gui.setVisible(visible);
+    }
+
     public void actionPerformed(ActionEvent e){
         if(e.getSource() == registerButton) {
             System.out.println("Register");

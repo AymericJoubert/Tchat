@@ -26,7 +26,6 @@ public class ServerTchat implements Runnable {
             db = new Database("tchat");
             log("ServerTchat Initialized");
             while (true) {
-                System.out.println("Attente de connection");
                 Socket connection = socket.accept();
                 Runnable runnable = new ServerTchat(connection);
                 Thread t = new Thread(runnable);
@@ -55,10 +54,8 @@ public class ServerTchat implements Runnable {
     }
 
     public static void log(String message) {
-        Date date = new Date();
-        Timestamp timeStampDate = new Timestamp(date.getTime());
         DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss,SSS");
-        System.out.println("[" + formatter.format(timeStampDate) + "] : " + message);
+        System.out.println("[" + formatter.format(new Timestamp(new Date().getTime())) + "] : " + message);
     }
 
 
@@ -69,7 +66,6 @@ public class ServerTchat implements Runnable {
             while(true) {
                 String req = in.readLine();
                 String[] request = req.split("###");
-                System.out.println(request[0]);
                 if (request[0].equals("register")) {
 //                    register();
                     if (db.register(request[1], request[2])) {
@@ -83,10 +79,17 @@ public class ServerTchat implements Runnable {
                 }
                 if (request[0].equals("login")) {
 //                    login();
-                    out.println(db.login(request[1], request[2]));
+                    String log = db.login(request[1], request[2]);
+                    out.println(log);
                     out.flush();
+                    if(!log.equals("fail")) {
+                        new UserService(connection, log.split("###"));
+                        break;
+                    }
                 }
             }
+            in.close();
+            out.close();
         } catch (Exception e) {
             e.printStackTrace();
         }

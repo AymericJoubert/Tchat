@@ -7,4 +7,6 @@ public interface Gui {
     public void popupMessage(String message);
     // Stop waiting message
     public void stopWaiting(boolean resetContainer);
+
+    public void setVisible(boolean visible);
 }

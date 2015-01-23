@@ -20,6 +20,7 @@ public class UserGui implements ActionListener, Gui {
 	private User user;
 	private JFrame gui;
 	private JPanel jp;
+	private JPanel contactList;
 	private JButton jbSend;
 	private JTextArea jtSend;
 	private JTextArea discussionArea;
@@ -51,7 +52,6 @@ public class UserGui implements ActionListener, Gui {
 	}
 
 	public void makeGui() {
-
 		// Get current screen size (in case of multiple monitors)
 		double width = GraphicsEnvironment.getLocalGraphicsEnvironment().getMaximumWindowBounds().width;
 		double height = GraphicsEnvironment.getLocalGraphicsEnvironment().getMaximumWindowBounds().height;
@@ -75,6 +75,21 @@ public class UserGui implements ActionListener, Gui {
 		jp.setBackground(Color.GREEN);
 		jpImageContact.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.LOWERED));
 		content.add(jp, BorderLayout.EAST);
+
+		// Contact List
+		jp = new JPanel();
+		jp.setLayout(new BoxLayout(jp, BoxLayout.Y_AXIS));
+		jp.setBackground(Color.RED);
+//		jp.setPreferredSize(new Dimension(200,500));
+		JTextField jtf = new JTextField("Contacts");
+		jtf.setEditable(false);
+		jtf.setPreferredSize(new Dimension(200,30));
+		contactList = new JPanel();
+		contactList.setLayout(new BoxLayout(contactList, BoxLayout.Y_AXIS));
+		jp.add(jtf);
+		jp.add(contactList);
+		content.add(jp, BorderLayout.WEST);
+
 
 		// Container Discussion
 		jp = new JPanel();
@@ -112,27 +127,29 @@ public class UserGui implements ActionListener, Gui {
 		catch(Exception fifou){
 
 		}
-		gui.setVisible(true);
+//		try {
+//			String line;
+//			line = in.readLine();
+//			while (!line.equals("stop")) {
+//				System.out.println("J'ai reçu : " + line);
+//				discussionArea.setText(discussionArea.getText() + "\n" + line);
+//				line = in.readLine();
+//			}
+//		}
+//		catch(Exception eee){
+//			eee.printStackTrace();
+//		}
+//		finally {
+//			try {
+//				in.close();
+//				out.close();
+//			}
+//			catch(Exception fre){}
+//		}
+	}
 
-		try {
-			String line;
-			line = in.readLine();
-			while (!line.equals("stop")) {
-				System.out.println("J'ai reçu : " + line);
-				discussionArea.setText(discussionArea.getText() + "\n" + line);
-				line = in.readLine();
-			}
-		}
-		catch(Exception eee){
-			eee.printStackTrace();
-		}
-		finally {
-			try {
-				in.close();
-				out.close();
-			}
-			catch(Exception fre){}
-		}
+	public void setVisible(boolean visible){
+		gui.setVisible(visible);
 	}
 
 	public void actionPerformed(ActionEvent e){
@@ -147,6 +164,16 @@ public class UserGui implements ActionListener, Gui {
 				jtSend.setText("");
 			}
 		}
+	}
+
+	public void setContactList(String contacts){
+		System.out.println(contacts);
+		String [] contactListString = contacts.split("###");
+		for(String currentContactString : contactListString){
+			String[] currentContact = currentContactString.split("%%%");
+			contactList.add(new JLabel(currentContact[1]));
+		}
+		contactList.repaint();
 	}
 
 	public JMenuBar createMenu() {
