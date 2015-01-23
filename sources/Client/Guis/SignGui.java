@@ -159,10 +159,12 @@ public class SignGui implements ActionListener, Gui {
         registerPassword.setText("");
         registerPasswordConf.setText("");
         registerUsername.setText("");
+        infoText.setText("");
     }
 
     public void actionPerformed(ActionEvent e){
         if(e.getSource() == registerButton) {
+            System.out.println("Register");
             if(!registerUsername.getText().equals("") && !registerPassword.getText().equals("") && !registerEmail.getText().equals("")) {
                 if (registerPassword.getText().equals(registerPasswordConf.getText())) {
                     setWaiting("Enregistrement ...");
@@ -180,14 +182,17 @@ public class SignGui implements ActionListener, Gui {
                     registerEmailBorder.setTitleColor(null);
                     infoText.setText("Password Error");
                     container.revalidate();
+                    container.repaint();
                 }
             }
             else {
                 infoText.setText("Fields are not all filled.");
                 container.revalidate();
+                container.repaint();
             }
         }
         if(e.getSource() == loginButton) {
+            System.out.println("Connection");
             if(!loginUsername.getText().equals("") && !loginPassword.getText().equals("")){
                 setWaiting("Connexion ...");
                 Thread logInThread = new Thread() {
@@ -202,6 +207,7 @@ public class SignGui implements ActionListener, Gui {
                 loginPasswordBorder.setTitleColor(Color.RED);
                 infoText.setText("Veuillez remplir les deux champs.");
                 container.revalidate();
+                container.repaint();
             }
         }
     }
@@ -215,6 +221,7 @@ public class SignGui implements ActionListener, Gui {
         waitingContainer.add(image, BorderLayout.CENTER);
         container.add(waitingContainer);
         container.revalidate();
+        container.repaint();
     }
 
     public void stopWaiting(final boolean resetContainer){
@@ -224,6 +231,7 @@ public class SignGui implements ActionListener, Gui {
             }
             container.remove(waitingContainer);
             container.add(credentialsContainer);
+            container.revalidate();
             container.repaint();
         }
     }

@@ -66,21 +66,28 @@ public class ServerTchat implements Runnable {
         try {
             PrintWriter out = new PrintWriter(connection.getOutputStream());
             BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-            String req = in.readLine();
-            String [] request = req.split("###");
-            System.out.println(request[0]);
-            if(request[0].equals("register")){
-                if(db.register(request[1], request[2])){
-                    out.println("successRegister");
+            while(true) {
+                String req = in.readLine();
+                String[] request = req.split("###");
+                System.out.println(request[0]);
+                if (request[0].equals("register")) {
+//                    register();
+                    if (db.register(request[1], request[2])) {
+                        out.println("successRegister");
+                        out.flush();
+                    }
+                    else{
+                        out.println("fail");
+                        out.flush();
+                    }
+                }
+                if (request[0].equals("login")) {
+//                    login();
+                    out.println(db.login(request[1], request[2]));
                     out.flush();
                 }
             }
-            if(request[0].equals("login")){
-                out.println(db.login(request[1], request[2]));
-                out.flush();
-            }
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
