@@ -6,6 +6,7 @@ import javax.swing.*;
 import java.io.*;
 import java.net.InetAddress;
 import java.net.Socket;
+import java.io.*;
 
 public class ClientTchat {
 
