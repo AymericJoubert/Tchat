@@ -17,6 +17,7 @@ public class ClientTchat {
     Gui signGui;
     UserGui tchatGui;
     Socket connection = null;
+    Socket connectionMainChat = null;
     PrintWriter out = null;
     BufferedReader in = null;
 
@@ -74,13 +75,12 @@ public class ClientTchat {
             ret = tmp.split("###");
             System.out.println(tmp);
             if (ret[0].equals("success")){
-                tmp = in.readLine();
-                User user = new User(ret[1], ret[2], ret[3]);
+                User user = new User(ret[1], ret[2], ret[3], null);
                 System.out.println("changement de gui");
+                connectionMainChat = new Socket(address, Integer.parseInt(ret[4]));
                 signGui.close();
-                tchatGui = new UserGui("Fifou", connection, this, user);
+                tchatGui = new UserGui("Fifou", connection, this, user, connectionMainChat);
                 tchatGui.setVisible(true);
-                tchatGui.setContactList(tmp);
             }
             else{
                 signGui.stopWaiting(false);

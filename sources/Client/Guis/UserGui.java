@@ -24,31 +24,40 @@ public class UserGui implements ActionListener, Gui {
 	private JButton jbSend;
 	private JTextArea jtSend;
 	private JTextArea discussionArea;
-	PrintWriter out;
-	BufferedReader in;
+	private Socket connectionMainChat;
+	private PrintWriter out;
+	private BufferedReader in;
 
-	public UserGui(String name, Socket server, ClientTchat clientTchat, User user){
+	public UserGui(String name, Socket server, ClientTchat clientTchat, User user, Socket connectionMainChat){
 		this.name = name;
 		this.clientTchat = clientTchat;
 		this.waiting = false;
 		this.user = user;
+		this.connectionMainChat = connectionMainChat;
 		gui = new JFrame(name);
 		jbSend = new JButton("Envoyer");
 		jtSend = new JTextArea();
 		discussionArea = new JTextArea();
 		try {
-			out = new PrintWriter(server.getOutputStream());
-			in  = new BufferedReader(new InputStreamReader(server.getInputStream()));
+			out = new PrintWriter(connectionMainChat.getOutputStream());
+			in = new BufferedReader(new InputStreamReader(connectionMainChat.getInputStream()));
+//			in  = new BufferedReader(new InputStreamReader(server.getInputStream()));
 		}
 		catch(Exception ex){
 			ex.printStackTrace();
-			try {
-				out.close();
-				in.close();
-			}catch(Exception ee){}
+//			try {
+//				out.close();
+//				in.close();
+//			}catch(Exception ee){}
 			System.exit(1);
 		}
 		makeGui();
+		Thread signInThread = new Thread() {
+			public void run() {
+				listenServeur();
+			}
+		};
+		signInThread.start();
 	}
 
 	public void makeGui() {
@@ -127,25 +136,6 @@ public class UserGui implements ActionListener, Gui {
 		catch(Exception fifou){
 
 		}
-//		try {
-//			String line;
-//			line = in.readLine();
-//			while (!line.equals("stop")) {
-//				System.out.println("J'ai reçu : " + line);
-//				discussionArea.setText(discussionArea.getText() + "\n" + line);
-//				line = in.readLine();
-//			}
-//		}
-//		catch(Exception eee){
-//			eee.printStackTrace();
-//		}
-//		finally {
-//			try {
-//				in.close();
-//				out.close();
-//			}
-//			catch(Exception fre){}
-//		}
 	}
 
 	public void setVisible(boolean visible){
@@ -157,10 +147,10 @@ public class UserGui implements ActionListener, Gui {
 		if (e.getSource() == jbSend) {
 			// Recuperation des données et envoi au serveur
 			if (!jtSend.getText().equals("")){
-				discussionArea.setText(discussionArea.getText() + "\n" + jtSend.getText());
 				System.out.println("J'envoi : " + jtSend.getText());
 				out.println(jtSend.getText());
 				out.flush();
+				discussionArea.setText(discussionArea.getText() + "\n" + jtSend.getText());
 				jtSend.setText("");
 			}
 		}
@@ -204,6 +194,28 @@ public class UserGui implements ActionListener, Gui {
 	public void stopWaiting(boolean resetContainer){
 		if(waiting){
 		}
+	}
+	
+	public void addText (String text) {
+		discussionArea.setText(discussionArea.getText()+"\n"+text);
+	}
+	
+	public void listenServeur() {
+		System.out.println("Je passe ici FIFOU");
+		try {
+			String line;
+			System.out.println("Je passe ici FIFOU 2");
+			while((line=in.readLine())!=null){
+				System.out.println("Je passe ici FIFOU 3");
+				System.out.println("Je recois : " + line);
+				addText(line);
+			}
+			System.out.println("Je passe ici FIFOU 4");
+		}
+		catch(Exception e){
+			e.printStackTrace();
+		}
+		
 	}
 
 }
